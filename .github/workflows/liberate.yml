@@ -1,26 +1,21 @@
-name: Migrate Sanity Assets to GitHub
-on:
-  workflow_dispatch:
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+name: Migrate Sanity Assets
+on: workflow_dispatch
 jobs:
   migrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAT }}
-      - name: Setup Node
-        uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Download and Upload Assets
-        run: |
-          mkdir -p assets
-          node scripts/prepare-github-assets.js
+      - run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/DromedaDev/serpent-tongue-assets.git
+          node scripts/prepare-github-assets.js
           git add .
-          git commit -m "chore: bulk migrate assets to storage"
-          git push
+          git commit -m "chore: migrate assets"
+          git push origin main
