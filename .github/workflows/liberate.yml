@@ -6,10 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
       - name: Download and Upload Assets
         run: |
           mkdir -p assets
-          # Read manifest and download
           node scripts/prepare-github-assets.js
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
