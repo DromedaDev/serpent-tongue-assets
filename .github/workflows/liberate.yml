@@ -1,0 +1,18 @@
+name: Migrate Sanity Assets to GitHub
+on:
+  workflow_dispatch:
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and Upload Assets
+        run: |
+          mkdir -p assets
+          # Read manifest and download
+          node scripts/prepare-github-assets.js
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add .
+          git commit -m "chore: bulk migrate assets to storage"
+          git push
